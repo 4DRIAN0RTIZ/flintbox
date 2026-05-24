@@ -1,0 +1,129 @@
+/* ══════════════════════════════════════════════
+   PANES — input / output panels + divider
+══════════════════════════════════════════════ */
+
+/* ── Panel base ── */
+.pane {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-1);
+  border: 1px solid var(--border-hi);
+  min-height: 0;         /* let grid row constrain height */
+  overflow: hidden;      /* clip children so output-pre scrolls inside */
+}
+
+.pane-in {
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+  border-right: none;
+}
+
+.pane-out {
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  border-left: none;
+}
+
+/* ── Panel header ── */
+.pane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.pane-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.pane-meta {
+  font-family: var(--font-code);
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+.json-fmt-btn {
+  font-family: var(--font-code);
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.json-fmt-btn:hover { color: var(--text-1); border-color: var(--text-2); }
+
+.json-lint {
+  font-family: var(--font-code);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.json-lint.ok  { color: var(--ok);  background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.json-lint.err { color: var(--err); background: color-mix(in srgb, var(--err) 12%, transparent); }
+
+.pane-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Code textarea (input panel) ── */
+.code-area {
+  flex: 1;
+  min-height: 0;         /* allow shrinking within pane */
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-0);
+  caret-color: var(--amber);
+  tab-size: 2;
+  overflow-y: auto;
+}
+
+.code-area::placeholder { color: var(--text-2); }
+
+/* ── Center divider with animated arrow ── */
+.pane-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-0);
+  position: relative;
+}
+
+.divider-track {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--border);
+}
+
+.divider-arrow {
+  font-family: var(--font-code);
+  font-size: 16px;
+  color: var(--text-2);
+  position: relative;
+  z-index: 1;
+  background: var(--bg-0);
+  padding: 6px 2px;
+  line-height: 1;
+  transition: color 0.2s, text-shadow 0.2s;
+  user-select: none;
+}
+
+.divider-arrow.firing {
+  color: var(--amber);
+  text-shadow: 0 0 12px var(--amber-glow), 0 0 24px var(--amber-ring);
+  animation: arrow-fire 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}

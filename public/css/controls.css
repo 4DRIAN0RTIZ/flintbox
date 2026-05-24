@@ -1,0 +1,132 @@
+/* ══════════════════════════════════════════════
+   CONTROLS — params row + command preview bar
+══════════════════════════════════════════════ */
+
+/* ── Control row (label | input | run button) ── */
+.control-row {
+  display: flex;
+  align-items: stretch;
+  height: 46px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.control-row:focus-within {
+  border-color: var(--amber-lo);
+  box-shadow: 0 0 0 3px var(--amber-ring);
+}
+
+.ctrl-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  min-width: 82px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border-right: 1px solid var(--border-hi);
+  white-space: nowrap;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.ctrl-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 16px;
+  font-size: 13px;
+  color: var(--text-0);
+  caret-color: var(--amber);
+}
+
+.ctrl-input::placeholder {
+  color: var(--text-2);
+}
+
+/* ── Run button ── */
+.run-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 22px;
+  background: var(--amber);
+  color: #0a0800;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  border: none;
+  transition: background 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.run-btn:hover:not(:disabled) {
+  background: var(--amber-hi);
+}
+.run-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.run-label {
+  text-transform: uppercase;
+}
+
+.run-kbd {
+  font-family: var(--font-code);
+  font-size: 9px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.14);
+  padding: 2px 5px;
+  border-radius: 2px;
+  letter-spacing: 0;
+}
+
+/* ── Command preview bar ── */
+.cmd-bar {
+  font-family: var(--font-code);
+  font-size: 11.5px;
+  color: var(--text-2);
+  padding: 7px 14px;
+  margin-bottom: 20px;
+  border-left: 2px solid var(--border-hi);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.cmd-ps {
+  color: var(--text-2);
+  margin-right: 7px;
+}
+.cmd-tool {
+  color: var(--amber);
+}
+.cmd-params {
+  color: var(--text-0);
+  margin: 0 5px;
+}
+.cmd-redir {
+  color: var(--text-2);
+  margin-right: 4px;
+}
+.cmd-stdin {
+  color: var(--text-2);
+  font-style: italic;
+}

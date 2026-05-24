@@ -1,0 +1,92 @@
+/* ══════════════════════════════════════════════
+   LAYOUT — app shell, header, workspace grid
+══════════════════════════════════════════════ */
+
+/* ── App shell ── */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;           /* fixed viewport height — no page scroll */
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 28px 16px;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 0 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 26px;
+  flex-shrink: 0;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-slash {
+  font-family: var(--font-code);
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--amber);
+  text-shadow: 0 0 14px var(--amber-glow), 0 0 30px rgba(224,152,32,0.06);
+  letter-spacing: -3px;
+  line-height: 1;
+}
+
+.brand-name {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--text-0);
+  text-transform: uppercase;
+}
+
+.brand-logo {
+  width: 25px;
+  border-radius: 4px;
+  filter: drop-shadow(0px 0px 4px #e38528);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.secure-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber-lo);
+  border: 1px solid var(--amber-lo);
+  padding: 3px 9px;
+  border-radius: 2px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 8px var(--ok);
+  animation: dot-breathe 3.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* ── Workspace grid ── */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 48px 1fr;
+  flex: 1;
+  min-height: 0;         /* allow flex parent to constrain height */
+  overflow: hidden;
+}

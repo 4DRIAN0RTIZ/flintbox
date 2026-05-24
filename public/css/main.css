@@ -1,0 +1,15 @@
+/* ══════════════════════════════════════════════
+   MAIN — CSS entry point
+   Import order matters: tokens first, then base,
+   then layout, then components, then animations.
+══════════════════════════════════════════════ */
+@import './tokens.css';
+@import './base.css';
+@import './layout.css';
+@import './tabs.css';
+@import './controls.css';
+@import './panes.css';
+@import './output.css';
+@import './ui.css';
+@import './input-source.css';
+@import './animations.css';

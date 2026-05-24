@@ -1,0 +1,54 @@
+/* ══════════════════════════════════════════════
+   ANIMATIONS — all @keyframes + responsive
+══════════════════════════════════════════════ */
+
+@keyframes dot-breathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(0.8); }
+}
+
+@keyframes arrow-fire {
+  0%   { transform: scaleY(1); }
+  35%  { transform: scaleY(1.5) translateY(-2px); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes out-appear {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 740px) {
+  .app    { padding: 0 16px 20px; }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 40px auto;
+  }
+
+  .pane-in {
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    border-right: 1px solid var(--border-hi);
+    border-bottom: none;
+    min-height: 220px;
+  }
+
+  .pane-out {
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+    border-left: 1px solid var(--border-hi);
+    border-top: none;
+    min-height: 220px;
+  }
+
+  .divider-arrow { transform: rotate(90deg); }
+  .run-kbd       { display: none; }
+  .secure-tag    { display: none; }
+  .brand-slash   { font-size: 16px; }
+
+  .help-drawer   { width: 100%; max-width: 100%; border-left: none; }
+}

@@ -1,0 +1,39 @@
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS — single source of truth
+   All CSS custom properties live here.
+══════════════════════════════════════════════ */
+:root {
+  /* Backgrounds — warm near-black scale */
+  --bg-0:       #07070a;   /* deepest */
+  --bg-1:       #0d0d11;   /* panels */
+  --bg-2:       #121217;   /* cards */
+
+  /* Phosphor amber palette */
+  --amber:      #e09820;
+  --amber-hi:   #f0b840;
+  --amber-lo:   #6b4a10;
+  --amber-glow: rgba(224, 152, 32, 0.14);
+  --amber-ring: rgba(224, 152, 32, 0.08);
+
+  /* Text scale — warm tints */
+  --text-0:     #ede8d8;   /* bright */
+  --text-1:     #a8a090;   /* mid */
+  --text-2:     #4e4a40;   /* muted */
+
+  /* Borders */
+  --border:     #1c1c22;
+  --border-hi:  #27272f;
+
+  /* Semantic */
+  --ok:         #4db87c;
+  --err:        #d95c5c;
+  --out:        #4ac8a8;   /* output text */
+
+  /* Typography */
+  --font-ui:    'Oxanium', sans-serif;
+  --font-code:  'Martian Mono', 'Courier New', monospace;
+
+  /* Radii */
+  --r:          4px;
+  --r-lg:       8px;
+}
