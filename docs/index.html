@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlintBox — Run jq, grep, sed, awk, cut from the browser</title>
+  <title>FlintBox: run jq, grep, sed, awk, cut from the browser</title>
   <meta name="description"
     content="A self-hosted playground that runs real jq, grep, sed, awk and cut binaries in a hardened sandbox against pasted or HTTP-fetched data." />
 
-  <meta property="og:title" content="FlintBox — text-processing tools in the browser" />
+  <meta property="og:title" content="FlintBox: text-processing tools in the browser" />
   <meta property="og:description"
     content="Real binaries, no shell, no JavaScript mocks. Paste data or pull it over HTTP and pipe it through jq/grep/sed/awk/cut." />
   <meta property="og:type" content="website" />
@@ -52,10 +52,10 @@
       <a class="btn btn-primary" href="http://localhost:3000">Open the app</a>
       <a class="btn" href="#self-host">Run it yourself</a>
     </div>
-    <pre class="hero-term"><span class="term-ps">$</span> curl -s localhost:3000/api/run \
-  -H 'content-type: application/json' \
-  -d '{"tool":"jq","params":".[] | .name","input":"[{\"name\":\"Alice\"}]"}'
-<span class="term-out">"Alice"</span></pre>
+    <pre class="hero-term"><span class="term-ps">$</span> docker run -d -p 3000:3000 \
+    --read-only --tmpfs /tmp:size=10m \
+    --cap-drop ALL --security-opt no-new-privileges \
+    ghcr.io/4drian0rtiz/flintbox:latest</pre>
   </header>
 
   <main>
@@ -142,13 +142,13 @@
       <ol class="numbered">
         <li>Choose a tool tab (<code>jq</code>, <code>grep</code>, <code>sed</code>, <code>awk</code>, <code>cut</code>).</li>
         <li>Enter the flags or expression in the params field. The preview bar assembles the command as you type.</li>
-        <li>Put data in the input pane — paste it, or set the source to <strong>http</strong> and give a URL.</li>
+        <li>Put data in the input pane: paste it, or set the source to <strong>http</strong> and give a URL.</li>
         <li>Press <kbd>Run</kbd> or <kbd>Ctrl</kbd>+<kbd>Enter</kbd> / <kbd>⌘</kbd>+<kbd>Enter</kbd>.</li>
         <li>Read stdout in the output pane; the exit code, elapsed time and any stderr show alongside.</li>
       </ol>
       <p class="section-lead">
         The last 10 commands are kept in <code>localStorage</code> and shown as
-        chips under the workspace — click one to reload that tool and params.
+        chips under the workspace. Click one to reload that tool and params.
       </p>
     </section>
 
@@ -156,7 +156,7 @@
     <section id="security" class="section">
       <h2>Why it is safe to self-host</h2>
       <ul class="checks">
-        <li><strong>No shell.</strong> Every binary runs via <code>execFile</code> with <code>shell: false</code> at hardcoded absolute paths — never resolved from <code>PATH</code>, never string-interpolated.</li>
+        <li><strong>No shell.</strong> Every binary runs via <code>execFile</code> with <code>shell: false</code> at hardcoded absolute paths, never resolved from <code>PATH</code>, never string-interpolated.</li>
         <li><strong>Whitelisted tools.</strong> Anything outside <code>jq/grep/sed/awk/cut</code> is rejected before execution.</li>
         <li><strong>Bounded input.</strong> Input is capped at 100&nbsp;KB, params at 500 chars, output at 2&nbsp;MB, each run at a 5&nbsp;s timeout.</li>
         <li><strong>SSRF guards.</strong> The HTTP proxy blocks private, loopback and link-local ranges, and enforces its own size and timeout limits.</li>
@@ -195,7 +195,7 @@
   </main>
 
   <footer class="footer">
-    <p>FlintBox — real binaries, sandboxed. <span id="year"></span></p>
+    <p>FlintBox, real binaries, sandboxed. <span id="year"></span></p>
     <a href="https://github.com/4drian0rtiz" target="_blank" rel="noopener">github.com/4drian0rtiz</a>
   </footer>
 
