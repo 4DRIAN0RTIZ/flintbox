@@ -20,7 +20,16 @@ A self-hosted, browser-based lab for running real text-processing tools — `jq`
 
 ## Quick start
 
-Requires Docker and Docker Compose v2.
+Run the published image (no clone needed):
+
+```bash
+docker run -d -p 3000:3000 \
+  --read-only --tmpfs /tmp:size=10m \
+  --cap-drop ALL --security-opt no-new-privileges \
+  ghcr.io/4drian0rtiz/flintbox:latest
+```
+
+Or build from source with Docker Compose v2:
 
 ```bash
 git clone https://github.com/youruser/flintbox
@@ -29,7 +38,8 @@ docker compose up --build -d
 ```
 
 Open **http://localhost:3000**. The Docker build compiles the React frontend
-and the runtime image serves the static bundle from `dist/`.
+and the runtime image serves the static bundle from `dist/`. Images are
+published to GHCR on every push to `main` and every tagged release.
 
 ### Local development (without Docker)
 
