@@ -9,8 +9,20 @@ import '../styles/output.css';
  * @param {{ text: string, exitCode: number, elapsed: string }|null} props.output
  * @param {string} props.stderr
  * @param {boolean} props.running
+ * @param {object} [props.panelRef]
+ * @param {object} [props.outputRef]
+ * @param {boolean} [props.panelFocused]
+ * @param {() => void} [props.onActivate]
  */
-export default function OutputPane({ output, stderr, running }) {
+export default function OutputPane({
+  output,
+  stderr,
+  running,
+  panelRef,
+  outputRef,
+  panelFocused = false,
+  onActivate,
+}) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -41,7 +53,13 @@ export default function OutputPane({ output, stderr, running }) {
   }
 
   return (
-    <div className="pane pane-out">
+    <div
+      ref={panelRef}
+      className={`pane pane-out${panelFocused ? ' panel-focused' : ''}`}
+      tabIndex={-1}
+      onFocus={onActivate}
+      onMouseDown={onActivate}
+    >
       <div className="pane-head">
         <span className="pane-title">Output</span>
         <div className="pane-actions">
@@ -60,7 +78,7 @@ export default function OutputPane({ output, stderr, running }) {
       </div>
 
       <div className="output-wrap">
-        <pre className={bodyClass} aria-label="Command output" aria-live="polite">
+        <pre ref={outputRef} className={bodyClass} aria-label="Command output" aria-live="polite">
           {bodyText}
         </pre>
       </div>

@@ -10,6 +10,17 @@
   border: 1px solid var(--border-hi);
   min-height: 0;         /* let grid row constrain height */
   overflow: hidden;      /* clip children so output-pre scrolls inside */
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pane.panel-focused {
+  border-color: var(--amber-lo);
+  box-shadow: 0 0 0 1px var(--amber-ring) inset;
+}
+
+.pane.panel-editing {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 1px var(--amber-ring) inset, 0 0 14px var(--amber-glow);
 }
 
 .pane-in {

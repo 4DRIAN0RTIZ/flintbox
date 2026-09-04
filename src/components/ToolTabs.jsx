@@ -2,11 +2,26 @@ import '../styles/tabs.css';
 
 /**
  * Presentational: tool selector tabs.
- * @param {{ tools: string[], active: string, onSelect: (tool: string) => void }} props
+ * @param {{ tools: string[], active: string, onSelect: (tool: string) => void, panelRef?: any, panelFocused?: boolean, onActivate?: () => void }} props
  */
-export default function ToolTabs({ tools, active, onSelect }) {
+export default function ToolTabs({
+  tools,
+  active,
+  onSelect,
+  panelRef,
+  panelFocused = false,
+  onActivate,
+}) {
   return (
-    <nav className="tool-tabs" role="tablist" aria-label="Select tool">
+    <nav
+      ref={panelRef}
+      className={`tool-tabs${panelFocused ? ' panel-focused' : ''}`}
+      role="tablist"
+      aria-label="Select tool"
+      tabIndex={-1}
+      onFocus={onActivate}
+      onMouseDown={onActivate}
+    >
       {tools.map((tool) => (
         <button
           key={tool}

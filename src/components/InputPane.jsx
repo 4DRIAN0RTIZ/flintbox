@@ -17,6 +17,12 @@ import HttpPanel from './HttpPanel.jsx';
  * @param {object} props.http                value from useHttpSource()
  * @param {() => void} props.onFetch
  * @param {(e: KeyboardEvent) => void} props.onPanelKeyDown
+ * @param {object} [props.panelRef]
+ * @param {object} [props.inputRef]
+ * @param {boolean} [props.panelFocused]
+ * @param {boolean} [props.inputEditMode]
+ * @param {() => void} [props.onActivatePanel]
+ * @param {() => void} [props.onActivateInput]
  */
 export default function InputPane({
   sourceMode,
@@ -30,11 +36,25 @@ export default function InputPane({
   http,
   onFetch,
   onPanelKeyDown,
+  panelRef,
+  inputRef,
+  panelFocused = false,
+  inputEditMode = false,
+  onActivatePanel,
+  onActivateInput,
 }) {
   const isHttp = sourceMode === 'http';
 
   return (
-    <div className={`pane pane-in${isHttp ? ' pane-in--http' : ''}`}>
+    <div
+      ref={panelRef}
+      className={`pane pane-in${isHttp ? ' pane-in--http' : ''}${panelFocused ? ' panel-focused' : ''}${inputEditMode ? ' panel-editing' : ''}`}
+      tabIndex={-1}
+      onFocus={(e) => {
+        if (e.target === e.currentTarget) onActivatePanel?.();
+      }}
+      onMouseDown={onActivatePanel}
+    >
       <div className="pane-head">
         <span className="pane-title">Input</span>
         <div className="src-tabs" role="tablist" aria-label="Input source">
@@ -69,12 +89,14 @@ export default function InputPane({
       )}
 
       <textarea
+        ref={inputRef}
         className="code-area"
         spellCheck="false"
         placeholder="Paste your data here…"
         aria-label="Input data"
         value={input}
         onChange={(e) => onInput(e.target.value)}
+        onFocus={onActivateInput}
       />
     </div>
   );

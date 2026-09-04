@@ -15,6 +15,7 @@ import HistoryBar from './components/HistoryBar.jsx';
 import HelpDrawer from './components/HelpDrawer.jsx';
 
 const TOOL_NAMES = Object.keys(TOOLS);
+const PANELS = ['tools', 'input', 'output'];
 
 /**
  * Container: owns all UI state, wires the hooks (run / help / history /
@@ -28,9 +29,19 @@ export default function App() {
   const [input, setInput] = useState(TOOLS.jq.input);
   const [sourceMode, setSourceMode] = useState('text'); // 'text' | 'http'
   const [arrowFiring, setArrowFiring] = useState(false);
+  const [activePanel, setActivePanel] = useState('input');
+  const [inputEditMode, setInputEditMode] = useState(false);
+  const [outputSearch, setOutputSearch] = useState({ query: '', index: -1 });
 
   const savedInputs = useRef({});
   const paramsRef = useRef(null);
+  const toolPanelRef = useRef(null);
+  const inputPanelRef = useRef(null);
+  const inputTextRef = useRef(null);
+  const outputPanelRef = useRef(null);
+  const outputTextRef = useRef(null);
+  const pendingGRef = useRef(false);
+  const pendingGTimeoutRef = useRef(null);
 
   const runner = useRunner();
   const help = useHelp();
@@ -115,26 +126,228 @@ export default function App() {
     }
   }, [handleFetch]);
 
+  const clearPendingG = useCallback(() => {
+    pendingGRef.current = false;
+    if (pendingGTimeoutRef.current) {
+      clearTimeout(pendingGTimeoutRef.current);
+      pendingGTimeoutRef.current = null;
+    }
+  }, []);
+
+  const scrollOutputTop = useCallback(() => {
+    const outputNode = outputTextRef.current;
+    if (!outputNode) return;
+    outputNode.scrollTop = 0;
+  }, []);
+
+  const scrollOutputBottom = useCallback(() => {
+    const outputNode = outputTextRef.current;
+    if (!outputNode) return;
+    outputNode.scrollTop = outputNode.scrollHeight;
+  }, []);
+
+  const searchOutput = useCallback(() => {
+    const outputNode = outputTextRef.current;
+    if (!outputNode) return;
+    const nextQuery = window.prompt('Search output', outputSearch.query) ?? null;
+    if (!nextQuery) return;
+    const query = nextQuery.trim();
+    if (!query) return;
+    const text = outputNode.textContent ?? '';
+    if (!text) return;
+    const needle = query.toLowerCase();
+    const haystack = text.toLowerCase();
+    const start = outputSearch.query === query ? outputSearch.index + 1 : 0;
+    let index = haystack.indexOf(needle, start);
+    if (index < 0) index = haystack.indexOf(needle);
+    if (index < 0) return;
+
+    setOutputSearch({ query, index });
+
+    const textNode = outputNode.firstChild;
+    if (textNode?.nodeType === Node.TEXT_NODE) {
+      const selection = window.getSelection();
+      if (selection) {
+        const range = document.createRange();
+        range.setStart(textNode, index);
+        range.setEnd(textNode, index + query.length);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+
+    const maxScroll = Math.max(outputNode.scrollHeight - outputNode.clientHeight, 0);
+    outputNode.scrollTop = maxScroll * (index / Math.max(text.length - 1, 1));
+  }, [outputSearch]);
+
+  const focusPanel = useCallback((panel, { editInput = false } = {}) => {
+    setActivePanel(panel);
+    setInputEditMode(panel === 'input' && editInput);
+
+    if (panel === 'tools') {
+      toolPanelRef.current?.focus();
+      return;
+    }
+    if (panel === 'output') {
+      outputPanelRef.current?.focus();
+      return;
+    }
+    if (editInput) {
+      inputTextRef.current?.focus();
+      return;
+    }
+    inputPanelRef.current?.focus();
+  }, []);
+
+  const movePanel = useCallback((delta) => {
+    const currentIndex = PANELS.indexOf(activePanel);
+    const nextIndex = (currentIndex + delta + PANELS.length) % PANELS.length;
+    focusPanel(PANELS[nextIndex]);
+  }, [activePanel, focusPanel]);
+
+  const activateToolsPanel = useCallback(() => {
+    setInputEditMode(false);
+    setActivePanel('tools');
+    clearPendingG();
+  }, [clearPendingG]);
+
+  const activateInputPanel = useCallback(() => {
+    setInputEditMode(false);
+    setActivePanel('input');
+    clearPendingG();
+  }, [clearPendingG]);
+
+  const activateInputEditor = useCallback(() => {
+    setInputEditMode(true);
+    setActivePanel('input');
+    clearPendingG();
+  }, [clearPendingG]);
+
+  const activateOutputPanel = useCallback(() => {
+    setInputEditMode(false);
+    setActivePanel('output');
+    clearPendingG();
+  }, [clearPendingG]);
+
   /* ── Global shortcuts ─────────────────────────────── */
 
   useEffect(() => {
+    const isEditableTarget = (target) => (
+      target instanceof HTMLElement
+      && (target.isContentEditable
+        || target.tagName === 'TEXTAREA'
+        || target.tagName === 'INPUT'
+        || target.tagName === 'SELECT')
+    );
+
     const onKeyDown = (e) => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         doRun();
-      } else if (e.key === 'Escape') {
-        help.closeHelp();
+        return;
       }
+
+      if (e.key === 'Escape') {
+        if (inputEditMode) {
+          e.preventDefault();
+          focusPanel('input');
+          return;
+        }
+        help.closeHelp();
+        return;
+      }
+
+      if (inputEditMode || isEditableTarget(e.target)) return;
+
+      if (e.key === 'j' || e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        clearPendingG();
+        movePanel(1);
+        return;
+      }
+
+      if (e.key === 'k' || e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        clearPendingG();
+        movePanel(-1);
+        return;
+      }
+
+      if (e.key === 'i') {
+        e.preventDefault();
+        clearPendingG();
+        focusPanel('input', { editInput: true });
+        return;
+      }
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        clearPendingG();
+        doRun();
+        return;
+      }
+
+      if (activePanel === 'output' && e.key === 'g') {
+        e.preventDefault();
+        if (pendingGRef.current) {
+          clearPendingG();
+          scrollOutputTop();
+          return;
+        }
+        pendingGRef.current = true;
+        pendingGTimeoutRef.current = setTimeout(() => {
+          pendingGRef.current = false;
+          pendingGTimeoutRef.current = null;
+        }, 550);
+        return;
+      }
+
+      if (activePanel === 'output' && e.key === 'G') {
+        e.preventDefault();
+        clearPendingG();
+        scrollOutputBottom();
+        return;
+      }
+
+      if (activePanel === 'output' && e.key === '/') {
+        e.preventDefault();
+        clearPendingG();
+        searchOutput();
+        return;
+      }
+
+      clearPendingG();
     };
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [doRun, help.closeHelp]);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      clearPendingG();
+    };
+  }, [
+    activePanel,
+    clearPendingG,
+    doRun,
+    focusPanel,
+    help.closeHelp,
+    inputEditMode,
+    movePanel,
+    scrollOutputBottom,
+    scrollOutputTop,
+    searchOutput,
+  ]);
 
   return (
     <div className="app">
       <Header />
 
-      <ToolTabs tools={TOOL_NAMES} active={tool} onSelect={selectTool} />
+      <ToolTabs
+        tools={TOOL_NAMES}
+        active={tool}
+        onSelect={selectTool}
+        panelRef={toolPanelRef}
+        panelFocused={activePanel === 'tools'}
+        onActivate={activateToolsPanel}
+      />
 
       <ControlRow
         label={cfg.label}
@@ -163,6 +376,12 @@ export default function App() {
           http={http}
           onFetch={handleFetch}
           onPanelKeyDown={handlePanelKeyDown}
+          panelRef={inputPanelRef}
+          inputRef={inputTextRef}
+          panelFocused={activePanel === 'input'}
+          inputEditMode={inputEditMode}
+          onActivatePanel={activateInputPanel}
+          onActivateInput={activateInputEditor}
         />
 
         <div className="pane-divider" aria-hidden="true">
@@ -170,7 +389,15 @@ export default function App() {
           <span className={`divider-arrow${arrowFiring ? ' firing' : ''}`}>→</span>
         </div>
 
-        <OutputPane output={runner.output} stderr={runner.stderr} running={runner.running} />
+        <OutputPane
+          output={runner.output}
+          stderr={runner.stderr}
+          running={runner.running}
+          panelRef={outputPanelRef}
+          outputRef={outputTextRef}
+          panelFocused={activePanel === 'output'}
+          onActivate={activateOutputPanel}
+        />
       </div>
 
       <HistoryBar items={history.items} onPick={applyHistory} />

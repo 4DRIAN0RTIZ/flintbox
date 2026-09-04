@@ -14,7 +14,7 @@ A self-hosted, browser-based lab for running real text-processing tools — `jq`
 - **Command preview bar** — live `$ tool params < stdin` preview as you type
 - **Help drawer** — `--help` output served from the running container binary
 - **History** — last 10 commands, persisted in `localStorage`
-- **Keyboard shortcut** — `Ctrl+Enter` / `⌘+Enter` to run
+- **Keyboard-driven mode** — `j/k` or arrows move focus between tool/input/output, `i` edits input, `Esc` exits edit mode, `Enter` runs, `gg`/`G` jump output, `/` searches output
 
 ---
 

@@ -7,6 +7,12 @@
   margin-bottom: 18px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--border-hi);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.tool-tabs.panel-focused {
+  border-bottom-color: var(--amber-lo);
+  box-shadow: inset 0 -1px 0 var(--amber-ring);
 }
 
 .tab {
