@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## [Unreleased]
+## [0.1.0] - 2026-09-04
 
 ### Bug Fixes
 
@@ -15,6 +15,7 @@ All notable changes to this project are documented here.
 
 ### Chore
 
+- Update CHANGELOG.md [skip ci] ([95ad369](https://github.com/4DRIAN0RTIZ/flintbox/commit/95ad369870948f8cac6efd1a0cc06a7086416400))
 - Update CHANGELOG.md [skip ci] ([a618222](https://github.com/4DRIAN0RTIZ/flintbox/commit/a6182221663d4c5c26c70d0020144256ebd44883))
 - Update CHANGELOG.md [skip ci] ([fafcc70](https://github.com/4DRIAN0RTIZ/flintbox/commit/fafcc701d64c8bcfc9ec6f5f3dfd7c680cf92fff))
 
