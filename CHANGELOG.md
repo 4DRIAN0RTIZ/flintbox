@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [0.2.0] - 2026-09-04
+
+### Features
+
+- Add public roadmap issue template ([3fae509](https://github.com/4DRIAN0RTIZ/flintbox/commit/3fae5097701dcb8f69bd049d1be4a40ec1545b71))
+
 ## [0.1.0] - 2026-09-04
 
 ### Bug Fixes
