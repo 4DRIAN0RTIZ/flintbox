@@ -5,6 +5,7 @@ export default function Header() {
       <div className="header-brand">
         <img src="/LogoFlintBoxReal.png" alt="FlintBox logo" className="brand-logo" />
         <span className="brand-name">FlintBox</span>
+        <span className="brand-version">v{__APP_VERSION__}</span>
       </div>
       <div className="header-right">
         <span className="secure-tag">Secure Sandbox</span>
