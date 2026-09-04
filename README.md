@@ -28,7 +28,19 @@ cd flintbox
 docker compose up --build -d
 ```
 
-Open **http://localhost:3000**.
+Open **http://localhost:3000**. The Docker build compiles the React frontend
+and the runtime image serves the static bundle from `dist/`.
+
+### Local development (without Docker)
+
+```bash
+pnpm install            # React + Vite toolchain (devDependencies)
+node server.js          # API on :3000
+pnpm dev                # Vite UI on :5173, proxies /api to :3000
+```
+
+For a production-style check: `pnpm build` then `node server.js` and open
+`:3000`. Tests: `pnpm test`.
 
 ### Change the host port
 
@@ -99,30 +111,25 @@ server {
 ├── docker-compose.yml            # standalone (exposes port)
 ├── docker-compose.traefik.yml    # Traefik labels, no exposed port
 ├── .env.example
-├── server.js                     # Express API
+├── server.js                     # Express API + serves the built dist/
 ├── package.json
-└── public/
-    ├── index.html                # Shell HTML — no inline CSS or JS
-    ├── css/
-    │   ├── main.css              # Entry point (@import chain)
-    │   ├── tokens.css            # Design tokens (CSS custom properties)
-    │   ├── base.css              # Reset + grain overlay
-    │   ├── layout.css            # App shell, header, workspace grid
-    │   ├── tabs.css              # Tool tabs
-    │   ├── controls.css          # Params row + command preview bar
-    │   ├── panes.css             # Input/output panels + divider
-    │   ├── output.css            # <pre>, CRT scanlines, stderr strip
-    │   ├── input-source.css      # HTTP panel (fields + curl modes)
-    │   ├── ui.css                # Badges, spinner, copy btn, help drawer, history
-    │   └── animations.css        # @keyframes + responsive breakpoints
-    └── js/
-        ├── config.js             # Tool definitions, help sources, constants
-        ├── dom.js                # Centralised DOM element registry
-        ├── history.js            # localStorage command history
-        ├── api.js                # fetch wrappers: /api/run /api/help /api/fetch-input
-        ├── ui.js                 # All DOM mutations and render logic
-        ├── input-source.js       # Input source module + curl parser
-        └── main.js               # Entry point — events + init
+├── index.html                    # Vite entry — no inline CSS or JS
+├── vite.config.mjs               # React plugin, /api dev proxy, vitest config
+├── assets/                       # Static files copied verbatim into dist/
+├── dist/                         # Build output (git-ignored) — served by server.js
+├── src/
+│   ├── main.jsx                  # React root + global stylesheets
+│   ├── App.jsx                   # Container — owns state, wires the hooks
+│   ├── api/client.js             # The only module that calls the backend
+│   ├── config/tools.js           # Tool definitions, help sources, constants
+│   ├── lib/                      # Pure helpers: curl parser, history, json-lint
+│   ├── hooks/                    # useRunner / useHelp / useCommandHistory / useHttpSource
+│   ├── components/               # Presentational components (no fetch)
+│   └── styles/                   # Per-module CSS (imported by each component)
+└── tests/
+    ├── setup.js                  # vitest + jsdom setup
+    ├── api-client.test.js        # client module, fetch mocked
+    └── App.test.jsx              # container render
 ```
 
 ---

@@ -1,16 +1,34 @@
+# ── Stage 1: build the React + Vite frontend ──────────────
+FROM node:22-alpine AS build
+
+WORKDIR /app
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml .npmrc pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile --prod=false
+
+COPY index.html vite.config.mjs ./
+COPY assets/ ./assets/
+COPY src/ ./src/
+RUN pnpm run build
+
+# ── Stage 2: runtime (Express + sandboxed CLI tools) ──────
 FROM node:22-alpine
 
 RUN apk add --no-cache jq gawk grep sed coreutils
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml .npmrc pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile --prod
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY server.js ./
-COPY public/ ./public/
+COPY --from=build /app/dist ./dist
 
 RUN chown -R appuser:appgroup /app
 
