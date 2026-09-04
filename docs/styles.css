@@ -173,18 +173,21 @@ kbd {
   background: var(--bg-1);
   border: 1px solid var(--border-hi);
   border-radius: var(--r-lg);
-  padding: 18px 20px;
+  padding: 16px 18px;
+  font-family: var(--font-code);
   font-size: 12.5px;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--text-1);
   overflow-x: auto;
-  white-space: pre;
+  /* normal (not pre) so editor reindentation of the HTML source collapses */
+  white-space: normal;
 }
 .hero-term { max-width: 720px; margin: 0 auto; }
 
-.term-ps { color: var(--amber); user-select: none; }
-.term-out { color: var(--out); }
-.term-cm { color: var(--text-2); }
+.cmd { display: block; }
+.cmd + .cmd { margin-top: 3px; }
+.cmd-ps { color: var(--amber); user-select: none; margin-right: 7px; }
+.cmd-cm { color: var(--text-2); margin-left: 8px; }
 
 /* ── Sections ── */
 .section {

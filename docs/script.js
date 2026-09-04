@@ -33,11 +33,11 @@
   }
 
   // Click-to-copy on shell/code blocks.
-  Array.prototype.forEach.call(document.querySelectorAll('pre.code, pre.hero-term'), function (pre) {
+  Array.prototype.forEach.call(document.querySelectorAll('.code'), function (pre) {
     pre.title = 'Click to copy';
     pre.style.cursor = 'copy';
     pre.addEventListener('click', function () {
-      var text = pre.innerText.replace(/^\$ /gm, '').trim();
+      var text = pre.innerText.replace(/^\$\s*/gm, '').trim();
       if (!navigator.clipboard) return;
       navigator.clipboard.writeText(text).then(function () {
         var prev = pre.getAttribute('data-copied');
