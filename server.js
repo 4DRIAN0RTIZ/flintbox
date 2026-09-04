@@ -4,6 +4,7 @@ const express = require('express');
 const { execFile } = require('child_process');
 const { parse: shellParse } = require('shell-quote');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = 3000;
@@ -26,7 +27,12 @@ const TIMEOUT_MS = 5000;
 const FORBIDDEN_OPS = new Set(['|', '>', '>>', '<', '&', ';', '`', '(', ')']);
 
 app.use(express.json({ limit: '110kb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+
+// The frontend is a Vite + React build (see feature_list.json #5). `npm run
+// build` emits static assets into dist/; that is what gets served in prod.
+// In dev, `npm run dev` serves the UI on :5173 and proxies /api here.
+const STATIC_DIR = path.join(__dirname, 'dist');
+app.use(express.static(STATIC_DIR));
 
 app.post('/api/run', (req, res) => {
   const { tool, params, input } = req.body ?? {};
@@ -275,6 +281,20 @@ app.post('/api/fetch-input', async (req, res) => {
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
+});
+
+// SPA fallback: any non-/api GET resolves to the built index.html so the
+// React router (client-side) owns navigation. 404 for API paths is left
+// to Express' default so real endpoint typos still surface.
+app.get(/^\/(?!api\/).*/, (req, res, next) => {
+  const indexHtml = path.join(STATIC_DIR, 'index.html');
+  if (!fs.existsSync(indexHtml)) {
+    return res
+      .status(503)
+      .type('text')
+      .send('Frontend not built. Run `npm run build` (or `npm run dev` for local development).');
+  }
+  return res.sendFile(indexHtml);
 });
 
 app.listen(PORT, () => {

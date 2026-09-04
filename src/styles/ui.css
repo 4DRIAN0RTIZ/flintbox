@@ -280,3 +280,21 @@
 .github-link span {
   white-space: nowrap;
 }
+
+/* ── Help drawer: React-rendered content variants ── */
+.help-body .help-pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--text-1);
+}
+
+.help-body .help-entry {
+  margin-bottom: 5px;
+}
+
+.help-body .help-error {
+  color: var(--err);
+  font-size: 11px;
+}

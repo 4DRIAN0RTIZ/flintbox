@@ -307,3 +307,9 @@
 .http-fetch-status.ok  { color: var(--ok); }
 .http-fetch-status.err { color: var(--err); }
 .http-fetch-status.warn { color: var(--amber); }
+
+/* Input textarea yields space to the HTTP panel when the source is 'http'
+   (vanilla set an inline flex; this class replaces it). */
+.pane-in.pane-in--http .code-area {
+  flex: 0 0 120px;
+}
