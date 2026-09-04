@@ -169,12 +169,20 @@
     <section id="self-host" class="section">
       <h2>Run it yourself</h2>
 
-      <h3>Docker (recommended)</h3>
+      <h3>Docker image (recommended)</h3>
+      <pre class="code"><span class="term-ps">$</span> docker run -d -p 3000:3000 \
+    --read-only --tmpfs /tmp:size=10m \
+    --cap-drop ALL --security-opt no-new-privileges \
+    ghcr.io/4drian0rtiz/flintbox:latest</pre>
+      <p>Open <a href="http://localhost:3000">http://localhost:3000</a>. Images are
+        published to GHCR on every push to <code>main</code> and every tagged release
+        (<code>:latest</code>, <code>:1.2.3</code>, <code>:1.2</code>).</p>
+
+      <h3>From source (Docker Compose)</h3>
       <pre class="code"><span class="term-ps">$</span> git clone https://github.com/4drian0rtiz/flintbox
 <span class="term-ps">$</span> cd flintbox
 <span class="term-ps">$</span> docker compose up --build -d</pre>
-      <p>Open <a href="http://localhost:3000">http://localhost:3000</a>. The image
-        builds the React frontend and the runtime serves the static bundle.</p>
+      <p>Builds the React frontend in the image; the runtime serves the static bundle.</p>
 
       <h3>Local development</h3>
       <pre class="code"><span class="term-ps">$</span> pnpm install        <span class="term-cm"># React + Vite toolchain</span>
