@@ -4,6 +4,7 @@
   "description": "FlintBox – Secure text-processing tool playground with real binary execution",
   "main": "server.js",
   "type": "commonjs",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "start": "node server.js",
     "dev": "vite",
