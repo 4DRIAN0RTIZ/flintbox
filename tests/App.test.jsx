@@ -20,6 +20,12 @@ describe('<App /> container', () => {
     expect(screen.getByLabelText('Command parameters')).toHaveValue('.[] | .name');
   });
 
+  it('shows the app version next to the brand name', () => {
+    render(<App />);
+
+    expect(screen.getByText(/^v\d+\.\d+\.\d+/)).toBeInTheDocument();
+  });
+
   it('switching tool updates params, label and command preview', () => {
     render(<App />);
 
