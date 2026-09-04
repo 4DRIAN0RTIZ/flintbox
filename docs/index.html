@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlintBox — Run jq, grep, sed, awk, cut from the browser</title>
+  <meta name="description"
+    content="A self-hosted playground that runs real jq, grep, sed, awk and cut binaries in a hardened sandbox against pasted or HTTP-fetched data." />
+
+  <meta property="og:title" content="FlintBox — text-processing tools in the browser" />
+  <meta property="og:description"
+    content="Real binaries, no shell, no JavaScript mocks. Paste data or pull it over HTTP and pipe it through jq/grep/sed/awk/cut." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://github.com/4drian0rtiz" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@300;400;500&family=Oxanium:wght@300;400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+</head>
+
+<body>
+
+  <!-- ══ NAV ══════════════════════════════════════════════ -->
+  <nav class="nav">
+    <a href="#top" class="nav-brand">Flint<span>Box</span></a>
+    <ul class="nav-links">
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#input">Input</a></li>
+      <li><a href="#usage">Usage</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#self-host">Self-host</a></li>
+      <li>
+        <a href="https://github.com/4drian0rtiz" target="_blank" rel="noopener" class="nav-gh">GitHub</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ══ HERO ═════════════════════════════════════════════ -->
+  <header id="top" class="hero">
+    <p class="hero-kicker">SECURE SANDBOX</p>
+    <h1>Real text-processing tools,<br />driven from the browser.</h1>
+    <p class="hero-sub">
+      FlintBox runs actual <code>jq</code>, <code>grep</code>, <code>sed</code>,
+      <code>awk</code> and <code>cut</code> binaries inside a hardened container
+      against data you paste or pull over HTTP. No shell. No JavaScript mocks.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="http://localhost:3000">Open the app</a>
+      <a class="btn" href="#self-host">Run it yourself</a>
+    </div>
+    <pre class="hero-term"><span class="term-ps">$</span> curl -s localhost:3000/api/run \
+  -H 'content-type: application/json' \
+  -d '{"tool":"jq","params":".[] | .name","input":"[{\"name\":\"Alice\"}]"}'
+<span class="term-out">"Alice"</span></pre>
+  </header>
+
+  <main>
+
+    <!-- ══ TOOLS ══════════════════════════════════════════ -->
+    <section id="tools" class="section">
+      <h2>Five tools, one screen</h2>
+      <p class="section-lead">
+        Pick a tab, type the flags or expression, hit Run. The command preview
+        bar shows exactly what will execute: <code>$ tool params &lt; stdin</code>.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <h3>jq</h3>
+          <p>Filter and transform JSON. Live JSON lint on the input and a one-click Format button.</p>
+          <code>.[] | .name</code>
+        </article>
+        <article class="card">
+          <h3>grep</h3>
+          <p>Search lines by pattern. Case-insensitivity, inversion, context and counts.</p>
+          <code>-i root</code>
+        </article>
+        <article class="card">
+          <h3>sed</h3>
+          <p>Stream edits: substitute, delete, print ranges, transliterate.</p>
+          <code>s/error/WARN/g</code>
+        </article>
+        <article class="card">
+          <h3>awk</h3>
+          <p>Field-oriented programs: columns, sums, conditionals, BEGIN/END blocks.</p>
+          <code>'{print $1, $3}'</code>
+        </article>
+        <article class="card">
+          <h3>cut</h3>
+          <p>Slice by delimiter, field, character or byte range.</p>
+          <code>-d, -f1,3</code>
+        </article>
+        <article class="card card-muted">
+          <h3>Help drawer</h3>
+          <p>The <kbd>? Help</kbd> button runs <code>tool --help</code> on the real container binary, with a structured cheat-sheet fallback.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ══ INPUT ══════════════════════════════════════════ -->
+    <section id="input" class="section">
+      <h2>Feed it data three ways</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-n">text</span>
+          <div>
+            <h3>Paste</h3>
+            <p>Type or paste straight into the input pane. That text becomes the tool's stdin.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-n">http</span>
+          <div>
+            <h3>HTTP fields</h3>
+            <p>
+              Switch the input source to <strong>http</strong> and fill a small form:
+              method, URL, headers, body. On Run, FlintBox fetches it through the
+              backend proxy and pipes the response body into the tool.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-n">curl</span>
+          <div>
+            <h3>Paste a curl command</h3>
+            <p>
+              The <strong>curl</strong> sub-mode parses a real command
+              (<code>-X</code>, <code>-H</code>, <code>-d</code>, <code>--json</code>,
+              <code>-L</code>, <code>-s</code> and more) and fills the fields for you.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ USAGE ══════════════════════════════════════════ -->
+    <section id="usage" class="section">
+      <h2>Running a command</h2>
+      <ol class="numbered">
+        <li>Choose a tool tab (<code>jq</code>, <code>grep</code>, <code>sed</code>, <code>awk</code>, <code>cut</code>).</li>
+        <li>Enter the flags or expression in the params field. The preview bar assembles the command as you type.</li>
+        <li>Put data in the input pane — paste it, or set the source to <strong>http</strong> and give a URL.</li>
+        <li>Press <kbd>Run</kbd> or <kbd>Ctrl</kbd>+<kbd>Enter</kbd> / <kbd>⌘</kbd>+<kbd>Enter</kbd>.</li>
+        <li>Read stdout in the output pane; the exit code, elapsed time and any stderr show alongside.</li>
+      </ol>
+      <p class="section-lead">
+        The last 10 commands are kept in <code>localStorage</code> and shown as
+        chips under the workspace — click one to reload that tool and params.
+      </p>
+    </section>
+
+    <!-- ══ SECURITY ═══════════════════════════════════════ -->
+    <section id="security" class="section">
+      <h2>Why it is safe to self-host</h2>
+      <ul class="checks">
+        <li><strong>No shell.</strong> Every binary runs via <code>execFile</code> with <code>shell: false</code> at hardcoded absolute paths — never resolved from <code>PATH</code>, never string-interpolated.</li>
+        <li><strong>Whitelisted tools.</strong> Anything outside <code>jq/grep/sed/awk/cut</code> is rejected before execution.</li>
+        <li><strong>Bounded input.</strong> Input is capped at 100&nbsp;KB, params at 500 chars, output at 2&nbsp;MB, each run at a 5&nbsp;s timeout.</li>
+        <li><strong>SSRF guards.</strong> The HTTP proxy blocks private, loopback and link-local ranges, and enforces its own size and timeout limits.</li>
+        <li><strong>Hardened container.</strong> Read-only root filesystem, dropped capabilities, <code>no-new-privileges</code>, 0.5 CPU / 128&nbsp;MB.</li>
+        <li><strong>No auth by design.</strong> It is meant to run on a network you control; put it behind your own reverse proxy if you expose it.</li>
+      </ul>
+    </section>
+
+    <!-- ══ SELF-HOST ══════════════════════════════════════ -->
+    <section id="self-host" class="section">
+      <h2>Run it yourself</h2>
+
+      <h3>Docker (recommended)</h3>
+      <pre class="code"><span class="term-ps">$</span> git clone https://github.com/4drian0rtiz/flintbox
+<span class="term-ps">$</span> cd flintbox
+<span class="term-ps">$</span> docker compose up --build -d</pre>
+      <p>Open <a href="http://localhost:3000">http://localhost:3000</a>. The image
+        builds the React frontend and the runtime serves the static bundle.</p>
+
+      <h3>Local development</h3>
+      <pre class="code"><span class="term-ps">$</span> pnpm install        <span class="term-cm"># React + Vite toolchain</span>
+<span class="term-ps">$</span> node server.js       <span class="term-cm"># API on :3000</span>
+<span class="term-ps">$</span> pnpm dev             <span class="term-cm"># Vite UI on :5173, proxies /api</span></pre>
+      <p>For a production-style check: <code>pnpm build</code> then
+        <code>node server.js</code> and open <code>:3000</code>. Tests: <code>pnpm test</code>.</p>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>FlintBox — real binaries, sandboxed. <span id="year"></span></p>
+    <a href="https://github.com/4drian0rtiz" target="_blank" rel="noopener">github.com/4drian0rtiz</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
