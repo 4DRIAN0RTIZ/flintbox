@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [0.2.1] - 2026-09-17
+
+### Bug Fixes
+
+- Complete issue template and prefix title with [roadmap] ([99f65a9](https://github.com/4DRIAN0RTIZ/flintbox/commit/99f65a9a6fb278725e2911a33739388a7671c65b))
+
 ## [0.2.0] - 2026-09-04
 
 ### Features
