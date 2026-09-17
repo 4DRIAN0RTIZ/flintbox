@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [0.2.2] - 2026-09-17
+
+### Bug Fixes
+
+- Drop pipe-encoded milestone from issue title ([6402673](https://github.com/4DRIAN0RTIZ/flintbox/commit/6402673282abb13d519670b412cbb572129a9774))
+
 ## [0.2.1] - 2026-09-17
 
 ### Bug Fixes
